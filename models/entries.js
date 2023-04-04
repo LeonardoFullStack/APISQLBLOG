@@ -30,12 +30,27 @@ const getEntriesByEmail = async (email) => {
    return result
 
 }
+
+const getOneConnect = async (entry) => {
+    let client, result;
+    try {
+        client = await pool.connect()
+        const data = await client.query(queries.getOneEntry,[entry])
+        result = data.rows
+        console.log(result)
+    } catch (error) {
+        throw error
+    } finally {
+        client.release()
+    }
+    return result
+}
 //CREAR UNA ENTRADA
-const createEntriesByEmail =async (title,content,email,category) => {
+const createEntriesByEmail =async (title,content,email,category,entryImage,extract) => {
     let data,client
     try {
      client = await pool.connect()
-    data = await client.query(queries.createEntries,[title,content,email,category])
+    data = await client.query(queries.createEntries,[title,content,email,category,entryImage,extract])
     
     } catch (error) {
         console.log(error)
@@ -43,7 +58,7 @@ const createEntriesByEmail =async (title,content,email,category) => {
     } finally {
         client.release()
     }
-    
+    console.log(data)
     return data
 }
 
@@ -55,7 +70,7 @@ const getAllEntriesConnect =async () => {
         client = await pool.connect()
         const data = await client.query(queries.getAllEntries)
         result=data.rows
-
+        
 
     } catch (error) {
         console.log(error)
@@ -82,11 +97,11 @@ let client,data
 
 }
 
-const updateEntriesById =async (email, title, newTitle, content, category) => {
+const updateEntriesById =async (email, oldTitle, title, content, category, entryImage, extract) => {
     let client,data
     try {
          client = await pool.connect()
-         data = await client.query(queries.updateEntry, [email, title, newTitle, content, category])
+         data = await client.query(queries.updateEntry, [email, oldTitle, title, content, category, entryImage, extract])
         
     } catch (error) {
        console.log(error)
@@ -106,7 +121,8 @@ module.exports={
     createEntriesByEmail,
     deleteEntriesByEmail,
     updateEntriesById,
-    getAllEntriesConnect
+    getAllEntriesConnect,
+    getOneConnect
     
 }
 

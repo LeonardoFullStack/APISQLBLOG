@@ -3,25 +3,28 @@ const {check} = require('express-validator')
 const {validarInputs} =  require('../middleware/validarInputs')
 const router=express.Router()
 
-const {createEntries,deleteEntries,getEntries,updateEntries} = require('../controllers/apiEntriesController')
+const {createEntries,deleteEntries,getEntries,updateEntries, getOneEntry} = require('../controllers/apiEntriesController')
 
 
 router.get('/',getEntries);
 router.post('/',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
-    check('email', 'el email no es válido').not().isEmpty(),
+    check('email', 'No se encuentra el campo email').not().isEmpty(),
     check('content', 'Tienes que poner un contenido').not().isEmpty(),
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     validarInputs
 ],createEntries);
-router.delete('/:title',deleteEntries);
+router.delete('/:title',[check('email', 'No se encuentra el campo email').not().isEmpty(),
+validarInputs
+],deleteEntries);
 router.put('/:title',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
-    check('email', 'el email no es válido').not().isEmpty(),
+    check('email', 'No se encuentra el campo email').not().isEmpty(),
     check('content', 'Tienes que poner un contenido').not().isEmpty(),
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     validarInputs
 ],updateEntries);
+router.get('/one/:id', getOneEntry)
 
 
 

@@ -1,13 +1,13 @@
 const { getAuthByEmail, createAutConnect, deleteAutConnect, updateAutConnect, getAllAuthsConnect } = require('../models/author');
-const { getAllAuts } = require('../models/queries');
+const { getAllAuts, } = require('../models/queries');
 
 const getAuthor = async (req, res) => {
     let data, msg
     let email = req.query.email
-    console.log(req.query.email)
+    console.log(req.body.email)
     try {
         if (email) {
-            let email = req.query.email
+
             console.log(email, 'el mail')
             const consulta = await getAuthByEmail(email)
             if (consulta.ok) {
@@ -61,12 +61,12 @@ const getAllAuths = async (req, res) => {
 }
 
 const createAuthor = async (req, res) => {
-    const { name, surname, email, image } = req.body
+    const { name, surname, email, image, password } = req.body
     const emailLibre = await getAuthByEmail(email)
     console.log(emailLibre)
     if (!emailLibre.ok) {
         try {
-            const data = await createAutConnect(name, surname, email, image)
+            const data = await createAutConnect(name, surname, email, image, password)
             res.status(200).json({
                 ok: true,
                 msg: `el usuario ${name} ha sido creado`,
@@ -87,43 +87,65 @@ const createAuthor = async (req, res) => {
         res.status(500).json({
             ok: false,
             msg: 'El email ya está en uso'
-        })  
+        })
     }
 }
 
 const deleteAuthor = async (req, res) => {
 
+    let email = req.params.email
+    console.log(email)
+
+
     try {
 
-        const data = await deleteAutConnect(req.params.email)
+        const userExists = await getAuthByEmail(email)
+        if (userExists.ok) {
 
-        res.status(200).json({
-            ok: true,
-            msg: `El usuario con email ${req.params.email} ha sido borrado`
-        })
+            const data = await deleteAutConnect(email)
+
+            res.status(200).json({
+                ok: true,
+                msg: `El usuario con email ${email} ha sido borrado`
+            })
+        } else {
+            res.status(500).json({
+                ok: false,
+                msg: 'No se ha encontrado el autor'
+            })
+        }
     } catch (error) {
         res.status(500).json({
             ok: false,
             msg: 'error al borrar el usuario'
         })
     }
+
 }
 
 const updateAuthor = async (req, res) => {
-    const { name, surname, email, image } = req.body
+    const { name, surname, email, image, password } = req.body
     const emailViejo = req.params.email
     try {
-        const data = await updateAutConnect(emailViejo, name, surname, email, image)
-        res.status(200).json({
-            ok: true,
-            msg: 'Usuario actualizado',
-            data: {
-                name,
-                surname,
-                email,
-                image
-            }
-        })
+        let userExists = await getAuthByEmail(emailViejo)
+        if (userExists.ok) {
+            const data = await updateAutConnect(emailViejo, name, surname, email, image, password)
+            res.status(200).json({
+                ok: true,
+                msg: 'Usuario actualizado',
+                data: {
+                    name,
+                    surname,
+                    email,
+                    image
+                }
+            })
+        } else {
+            res.status(500).json({
+                ok: false,
+                msg: 'No se ha encontrado el autor'
+            })
+        }
     } catch (error) {
         res.status(500).json({
             ok: false,

@@ -1,13 +1,17 @@
 const express=require('express')
 
 const app=express()
-const port=process.env.PORT || 3001;
+//usar dotenv
+require('dotenv').config();
+const port=process.env.PORT || 3000;
 
 
 // Body-parser middleware
 app.use(express.urlencoded({extended:true}))
+// usar jsons
 app.use(express.json())
 
+console.log(process.env.PORT)
 app.use(express.static(__dirname+'/public'))
 
 
@@ -16,5 +20,6 @@ app.use('/api/aut',require('./routers/apiAutRoute'))
 
 
 app.listen(port,()=>{
+    console.log(process.env.PORT)
     console.log(`servidor a la escucha del ${port}`)
 })

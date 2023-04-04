@@ -63,13 +63,13 @@ const getAllAuthsConnect =async () => {
 }
 
 //CREAR AUTOR
-const createAutConnect =async (name, surname, email, image) => {
+const createAutConnect =async (name, surname, email, image, password) => {
     let respuesta;
 
     try {
         client = await pool.connect()
 
-        const data = await client.query(queries.createAut, [name,surname,email,image])
+        const data = await client.query(queries.createAut, [name,surname,email,image, password])
         respuesta = data.rows
     } catch (error) {
         throw error
@@ -87,6 +87,7 @@ const deleteAutConnect =async (email) => {
         client = await pool.connect()
      console.log('llego?')
          data = await client.query(queries.deleteAut, [email])
+         console.log(data.rows)
          
     } catch (error) {
         
@@ -99,11 +100,11 @@ const deleteAutConnect =async (email) => {
     /* return data.rows */
 }
 //ACTUALIZAR AUTOR
-const updateAutConnect =async (emailViejo, name, surname, email, image) => {
+const updateAutConnect =async (emailViejo, name, surname, email,image,  password) => {
     let data,client
     try {
          client = await pool.connect()
-         data = await client.query(queries.updateAut, [emailViejo, name, surname, email, image])
+         data = await client.query(queries.updateAut, [emailViejo, name, surname, email, image,password])
         
     } catch (error) {
        console.log(error)
