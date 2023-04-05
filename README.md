@@ -27,11 +27,14 @@ api de sql
 por hacer:
 modificar el queries.sql para hacer la cuenta aadmin
 mandar el error en azul en todos los trycatch
-rutas del admin
+
+
 maquetar
-registro de usuarios
 paginacion
-quitar el nav del 404
+no funciona el eliminar las entradas de otros desde admin
+
+quitar el admin del nav
+
 podría poner el avatar del autor en las entradas
 
 
