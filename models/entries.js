@@ -113,8 +113,19 @@ const updateEntriesById =async (email, oldTitle, title, content, category, entry
 }
 
 
-//ELIMINAR UNA ENTRADA
-//ACUALIZAR UNA ENTRADA
+const deleteByIdConnect =async (id) => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.deleteEntryById, [id])
+    } catch (error) {
+        console.log(error)
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
 
 module.exports={
     getEntriesByEmail,
@@ -122,7 +133,8 @@ module.exports={
     deleteEntriesByEmail,
     updateEntriesById,
     getAllEntriesConnect,
-    getOneConnect
+    getOneConnect,
+    deleteByIdConnect
     
 }
 

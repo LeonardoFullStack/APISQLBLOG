@@ -1,4 +1,4 @@
-const { getEntriesByEmail, createEntriesByEmail, deleteEntriesByEmail, updateEntriesById, getAllEntriesConnect,getOneConnect } = require('../models/entries')
+const { getEntriesByEmail, createEntriesByEmail, deleteEntriesByEmail, updateEntriesById, getAllEntriesConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
 
 const { getAuthByEmail } = require('../models/author');
 
@@ -208,11 +208,37 @@ const getOneEntry = async (req,res) => {
     }
 }
 
+const deleteById =async (req,res) => {
+    const { id } = req.params
+    
+    try {
+       const entryExist = await getOneConnect(id)
+       if (entryExist.length == 0) {
+        res.status(404).json({
+            ok: false,
+            msg: 'No se ha encontrado la entrada'
+        })
+       } else {
+        const delById = deleteByIdConnect(id)
+        res.status(200).json({
+            ok:true,
+            msg:'Se ha eliminado la entrada'
+        })
+       }
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'Error de conexión'
+        })
+    }
+}
+
 module.exports = {
     getEntries,
     createEntries,
     deleteEntries,
     updateEntries,
-    getOneEntry
+    getOneEntry,
+    deleteById
 }
 

@@ -36,7 +36,9 @@ const queries={
                 WHERE email=$1`,
     getOneEntry:`SELECT *
                  FROM entries
-                 WHERE id_entry=$1`
+                 WHERE id_entry=$1`,
+    deleteEntryById: `DELETE FROM entries
+                      WHERE id_entry=$1`
 
 }
 
