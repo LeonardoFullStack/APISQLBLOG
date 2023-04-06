@@ -9,8 +9,8 @@ api de sql
 - POST : http://localhost:3000/api/entries/    -**crear entrada**
 {title, content, email, category, entryImage, extract} = req.body
 - DELETE : http://localhost:3000/api/entries/:title   -**borrar una entrada**
-- DELETE : http://localhost:3000/api/entries/delbyid/:id   -**borrar una entrada por id (para el admin)**
 {email} = req.body  ( no puede haber dos títulos iguales por email )
+- DELETE : http://localhost:3000/api/entries/delbyid/:id   -**borrar una entrada por id (para el admin)**
 - PUT : http://localhost:3000/api/entries/:title **actualizar una entrada**
 
 ##TABLA AUTHORS 

@@ -1,5 +1,5 @@
 
---CREAR TABLA AUTHRS 
+--CREAR TABLA AUTHORS 
 CREATE TABLE authors (
   id_author serial NOT NULL PRIMARY KEY, 
   password varchar(255) NOT NULL,
@@ -25,12 +25,12 @@ CREATE TABLE entries (
 );
 
 --DATOS PRUEBA AUTORES
-INSERT INTO authors(name,surname,password,email,image) --falta el estracto (abajo)
+INSERT INTO authors(name,surname,password,email,image,isadmin) --ana es admin
 VALUES
-('ana','anacleta','1234','ana@correo.es','https://randomuser.me/api/portraits/thumb/women/75.jpg'),
-('maria','marieta','1234','maria@correo.es','https://randomuser.me/api/portraits/thumb/women/60.jpg'),
-('juan','juanito','1234','juan@correo.es','https://randomuser.me/api/portraits/thumb/men/45.jpg'),
-('pepe','pepin','1234','pepe@correo.es','https://randomuser.me/api/portraits/thumb/men/72.jpg');
+('ana','anacleta','$2a$10$/XQkC2mGQQiLq3UKmq71FOWssT4l0WlpYx8/CcCqSrahKOn13IAnS','ana@correo.es','https://randomuser.me/api/portraits/thumb/women/75.jpg', true),
+('maria','marieta','$2a$10$/XQkC2mGQQiLq3UKmq71FOWssT4l0WlpYx8/CcCqSrahKOn13IAnS','maria@correo.es','https://randomuser.me/api/portraits/thumb/women/60.jpg', false),
+('juan','juanito','$2a$10$/XQkC2mGQQiLq3UKmq71FOWssT4l0WlpYx8/CcCqSrahKOn13IAnS','juan@correo.es','https://randomuser.me/api/portraits/thumb/men/45.jpg', false),
+('pepe','pepin','$2a$10$/XQkC2mGQQiLq3UKmq71FOWssT4l0WlpYx8/CcCqSrahKOn13IAnS','pepe@correo.es','https://randomuser.me/api/portraits/thumb/men/72.jpg', false);
 
 --DATOS PRUEBA ENTRIES '',
 INSERT INTO entries(title,extract,entryImage,content,id_author,category)
