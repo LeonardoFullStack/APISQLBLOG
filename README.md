@@ -32,6 +32,8 @@ mandar el error en azul en todos los trycatch
 
 maquetar
 paginacion
+cambiar el updatebyid por updatebyemail
+crear el updatebyId
 
 
 

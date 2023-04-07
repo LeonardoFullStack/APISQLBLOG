@@ -3,7 +3,7 @@ const {check} = require('express-validator')
 const {validarInputs} =  require('../middleware/validarInputs')
 const router=express.Router()
 
-const {createEntries,deleteEntries,getEntries,updateEntries, getOneEntry, deleteById} = require('../controllers/apiEntriesController')
+const {createEntries,deleteEntries,getEntries,updateEntries, getOneEntry, deleteById, updateById} = require('../controllers/apiEntriesController')
 
 
 router.get('/',getEntries);
@@ -25,6 +25,7 @@ router.put('/:title',[
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     validarInputs
 ],updateEntries);
+router.put('/editId/:id', updateById)
 router.get('/one/:id', getOneEntry)
 
 

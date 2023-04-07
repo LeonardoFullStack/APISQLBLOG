@@ -38,7 +38,10 @@ const queries={
                  FROM entries
                  WHERE id_entry=$1`,
     deleteEntryById: `DELETE FROM entries
-                      WHERE id_entry=$1`
+                      WHERE id_entry=$1`,
+    updateEntryById:`UPDATE entries
+                    SET title =$2 , content=$3 , category=$4, entryImage=$5, extract=$6
+                    WHERE id_entry=$1`
 
 }
 

@@ -1,4 +1,4 @@
-const { getEntriesByEmail, createEntriesByEmail, deleteEntriesByEmail, updateEntriesById, getAllEntriesConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
+const { updateByIdConnect ,getEntriesByEmail, createEntriesByEmail, deleteEntriesByEmail, updateEntriesById, getAllEntriesConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
 
 const { getAuthByEmail } = require('../models/author');
 
@@ -233,12 +233,33 @@ const deleteById =async (req,res) => {
     }
 }
 
+const updateById = async (req,res) => {
+    const id = req.params.id
+    const { title, content, category, entryImage, extract} = req.body
+    const body = {id, ...req.body}
+    console.log(id,'id')
+    try {
+        const data = updateByIdConnect( title, content, category, entryImage, extract, id)
+        res.status(200).json({
+            ok:true,
+            msg:'Se ha actualizado la entrada',
+            data: body
+        })
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
+}
+
 module.exports = {
     getEntries,
     createEntries,
     deleteEntries,
     updateEntries,
     getOneEntry,
-    deleteById
+    deleteById,
+    updateById
 }
 
