@@ -4,11 +4,11 @@ const { getAllAuts, } = require('../models/queries');
 const getAuthor = async (req, res) => {
     let data, msg
     let email = req.query.email
-    console.log(req.body.email)
+    
     try {
         if (email) {
 
-            console.log(email, 'el mail')
+            
             const consulta = await getAuthByEmail(email)
             if (consulta.ok) {
                 msg = 'Se ha encontrado el usuario'
@@ -63,7 +63,7 @@ const getAllAuths = async (req, res) => {
 const createAuthor = async (req, res) => {
     const { name, surname, email, image, password } = req.body
     const emailLibre = await getAuthByEmail(email)
-    console.log(emailLibre)
+    
     if (!emailLibre.ok) {
         try {
             const data = await createAutConnect(name, surname, email, image, password)
@@ -94,7 +94,7 @@ const createAuthor = async (req, res) => {
 const deleteAuthor = async (req, res) => {
 
     let email = req.params.email
-    console.log(email)
+  
 
 
     try {

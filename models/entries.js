@@ -3,11 +3,15 @@ const { Pool } = require('pg')
 const queries=require('./queries')
 
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    database: 'blog',
-    password: 'admin'
-})
+    host: 'kandula.db.elephantsql.com',
+    user: 'xrkzcuuj',
+    database: 'xrkzcuuj',
+    password: 'Cu7FxPLSMPrpy6YmtbV620-TT-hPqxCh',
+    port: 5432, // Puerto por defecto para PostgreSQL
+    ssl: {
+      rejectUnauthorized: false // Habilitar SSL sin verificar el certificado
+    }
+  });
 
 //ACCEDER A LAS ENTRADAS POR EMAIL
 const getEntriesByEmail = async (email) => {
@@ -17,11 +21,11 @@ const getEntriesByEmail = async (email) => {
         const data = await client.query(queries.getEntriesByEmail,[email])
 
         result=data.rows
-        console.log(result)
+       
 
 
     } catch (error) {
-        console.log(error)
+        
         throw error
     } finally {
         client.release()
@@ -37,7 +41,7 @@ const getOneConnect = async (entry) => {
         client = await pool.connect()
         const data = await client.query(queries.getOneEntry,[entry])
         result = data.rows
-        console.log(result)
+       
     } catch (error) {
         throw error
     } finally {
@@ -53,12 +57,12 @@ const createEntriesByEmail =async (title,content,email,category,entryImage,extra
     data = await client.query(queries.createEntries,[title,content,email,category,entryImage,extract])
     
     } catch (error) {
-        console.log(error)
+       
         throw error
     } finally {
         client.release()
     }
-    console.log(data)
+   
     return data
 }
 
@@ -73,7 +77,7 @@ const getAllEntriesConnect =async () => {
         
 
     } catch (error) {
-        console.log(error)
+     
         throw error
     } finally {
         client.release()
@@ -89,7 +93,7 @@ let client,data
          client = await pool.connect()
          data = await client.query(queries.deleteEntry, [title, email])
     } catch (error) {
-        console.log(error)
+      
         throw error
     } finally {
         client.release()
@@ -104,7 +108,7 @@ const updateEntriesById =async (email, oldTitle, title, content, category, entry
          data = await client.query(queries.updateEntry, [email, oldTitle, title, content, category, entryImage, extract])
         
     } catch (error) {
-       console.log(error)
+       
        throw error 
     } finally {
         client.release()
@@ -119,7 +123,7 @@ const deleteByIdConnect =async (id) => {
          client = await pool.connect()
          data = await client.query(queries.deleteEntryById, [id])
     } catch (error) {
-        console.log(error)
+       
         throw error
     } finally {
         client.release()
@@ -133,7 +137,7 @@ const updateByIdConnect =async (title, content, category, entryImage, extract, i
          client = await pool.connect()
          data = await client.query(queries.updateEntryById, [id, title, content, category, entryImage, extract])
     } catch (error) {
-        console.log(error)
+       
         throw error
     } finally {
         client.release()
