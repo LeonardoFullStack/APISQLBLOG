@@ -25,19 +25,3 @@ api de sql
 
 
 
-por hacer:
-modificar el queries.sql para hacer la cuenta aadmin
-mandar el error en azul en todos los trycatch
-
-
-maquetar
-paginacion
-cambiar el updatebyid por updatebyemail
-crear el updatebyId
-
-
-
-
-podría poner el avatar del autor en las entradas
-
-
