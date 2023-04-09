@@ -2,11 +2,15 @@ const { Pool } = require('pg')
 const queries = require('./queries')
 
 const pool = new Pool({
-    host: 'localhost',
-    user: 'postgres',
-    database: 'blog',
-    password: 'admin'
-})
+    host: 'kandula.db.elephantsql.com',
+    user: 'xrkzcuuj',
+    database: 'xrkzcuuj',
+    password: 'Cu7FxPLSMPrpy6YmtbV620-TT-hPqxCh',
+    port: 5432, // Puerto por defecto para PostgreSQL
+    ssl: {
+      rejectUnauthorized: false // Habilitar SSL sin verificar el certificado
+    }
+  });
 
 //ACCEDER A LOS AUTORES POR EMAIL
 const getAuthByEmail = async (email) => {
@@ -32,7 +36,7 @@ const getAuthByEmail = async (email) => {
         
 
     } catch (error) {
-       console.log(error)
+      
         throw error
     } finally {
         client.release()
@@ -53,7 +57,7 @@ const getAllAuthsConnect =async () => {
 
 
     } catch (error) {
-        console.log(error)
+        
         throw error
     } finally {
         client.release()
@@ -76,7 +80,7 @@ const createAutConnect =async (name, surname, email, image, password) => {
     } finally {
         client.release()
     }
-    console.log(respuesta)
+   
     return respuesta
 }
 //ELIMINAR AUTOR
@@ -85,9 +89,9 @@ const deleteAutConnect =async (email) => {
     let data,client
     try {
         client = await pool.connect()
-     console.log('llego?')
+     
          data = await client.query(queries.deleteAut, [email])
-         console.log(data.rows)
+        
          
     } catch (error) {
         
@@ -107,7 +111,7 @@ const updateAutConnect =async (emailViejo, name, surname, email,image,  password
          data = await client.query(queries.updateAut, [emailViejo, name, surname, email, image,password])
         
     } catch (error) {
-       console.log(error)
+    
        throw error 
     } finally {
         client.release()
