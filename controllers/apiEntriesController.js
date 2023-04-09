@@ -45,7 +45,7 @@ const getAllEntries = async () => {
     let data;
     try {
         data = await getAllEntriesConnect()
-        console.log(data)
+        
 
     } catch (error) {
         res.status(500).json({
@@ -68,7 +68,7 @@ const createEntries = async (req, res) => {
 
             try {
                 const data = await createEntriesByEmail(title, content, email, category, entryImage, extract);
-                console.log(data, 'data')
+                
                 res.status(200).json({
                     ok: true,
                     msg: 'entrada creada',
@@ -148,11 +148,11 @@ const updateEntries = async (req, res) => {
     let userExists = await getAuthByEmail(email)
     let titleExists = await getEntriesByEmail(email)
     let sameEntry = titleExists.filter(object => object.title.includes(oldTitle))
-    console.log(userExists.ok, sameEntry)
+    
     if (userExists.ok && sameEntry.length != 0) {
         try {
             const data = await updateEntriesById(email, oldTitle, title, content, category, entryImage, extract)
-            console.log(data)
+            
             res.status(200).json({
                 ok: true,
                 msg: 'entrada actualizada',
@@ -237,7 +237,7 @@ const updateById = async (req,res) => {
     const id = req.params.id
     const { title, content, category, entryImage, extract} = req.body
     const body = {id, ...req.body}
-    console.log(id,'id')
+    
     try {
         const data = updateByIdConnect( title, content, category, entryImage, extract, id)
         res.status(200).json({
