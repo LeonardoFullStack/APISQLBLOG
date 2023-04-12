@@ -34,9 +34,11 @@ const queries={
     updateAut:`UPDATE authors
                 SET name =$2 , surname=$3 , email=$4, image=$5, password=$6
                 WHERE email=$1`,
-    getOneEntry:`SELECT *
-                 FROM entries
-                 WHERE id_entry=$1`,
+    getOneEntry:`SELECT *, a.id_author
+    FROM entries AS e
+    INNER JOIN authors AS a
+    ON e.id_author=a.id_author
+    WHERE e.id_entry=$1`,
     deleteEntryById: `DELETE FROM entries
                       WHERE id_entry=$1`,
     updateEntryById:`UPDATE entries
