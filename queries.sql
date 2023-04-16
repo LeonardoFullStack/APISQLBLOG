@@ -6,7 +6,6 @@ CREATE TABLE authors (
   name varchar(45) NOT NULL, 
   surname varchar(45) NOT NULL, 
   email varchar(100) NOT NULL UNIQUE,
-  image varchar(255),
   isAdmin boolean DEFAULT false
 );
 

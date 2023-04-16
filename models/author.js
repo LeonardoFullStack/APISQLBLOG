@@ -67,13 +67,13 @@ const getAllAuthsConnect =async () => {
 }
 
 //CREAR AUTOR
-const createAutConnect =async (name, surname, email, image, password) => {
+const createAutConnect =async (name, surname, email, password) => {
     let respuesta;
 
     try {
         client = await pool.connect()
 
-        const data = await client.query(queries.createAut, [name,surname,email,image, password])
+        const data = await client.query(queries.createAut, [name,surname,email, password])
         respuesta = data.rows
     } catch (error) {
         throw error

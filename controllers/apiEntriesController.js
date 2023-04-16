@@ -2,6 +2,7 @@ const { updateByIdConnect ,getEntriesByEmail, createEntriesByEmail, deleteEntrie
 
 const { getAuthByEmail } = require('../models/author');
 
+
 const getEntries = async (req, res) => {
     let data, msg, ok, userExists
     let email = req.query.email
@@ -10,7 +11,7 @@ const getEntries = async (req, res) => {
     try {
 
         if (email) {
-            userExists = await getAuthByEmail(email)
+            
 
             data = await getEntriesByEmail(email)
             if (data.length == 0) {
@@ -21,8 +22,9 @@ const getEntries = async (req, res) => {
             }
 
         } else {
-
+           
             data = await getAllEntries()
+           
             ok = true
             msg = 'Todas las entradas'
         }
@@ -34,7 +36,8 @@ const getEntries = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             ok: false,
-            msg: 'contacta con el administrador'
+            msg: 'contacta con el administrador',
+            error
         })
     }
 
@@ -45,6 +48,7 @@ const getAllEntries = async () => {
     let data;
     try {
         data = await getAllEntriesConnect()
+        
         
 
     } catch (error) {
@@ -57,7 +61,7 @@ const getAllEntries = async () => {
 }
 
 const createEntries = async (req, res) => {
-    const { title, content, email, category,entryImage, extract } = req.body
+    const { title, content, email, category, extract, entryImage } = req.body
     let userExists = await getAuthByEmail(email)
     let entries = await getEntriesByEmail(email)
     let titleExists = entries.filter(entry => entry.title == title)
@@ -145,11 +149,12 @@ const updateEntries = async (req, res) => {
     const { email, title, content, category, entryImage, extract } = req.body
     const oldTitle = req.params.title
 
-    let userExists = await getAuthByEmail(email)
-    let titleExists = await getEntriesByEmail(email)
+    console.log(entryImage)
+    let titleExists = await getAllEntries()
     let sameEntry = titleExists.filter(object => object.title.includes(oldTitle))
-    
-    if (userExists.ok && sameEntry.length != 0) {
+
+    if ( sameEntry.length != 0) {
+
         try {
             const data = await updateEntriesById(email, oldTitle, title, content, category, entryImage, extract)
             

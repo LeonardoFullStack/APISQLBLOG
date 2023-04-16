@@ -1,12 +1,12 @@
 const queries={
     getEntriesByEmail:`
-    SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname,a.image
+    SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
     FROM entries AS e
     INNER JOIN authors AS a
     ON e.id_author=a.id_author
     WHERE a.email=$1
     ORDER BY e.date DESC;`,
-    getAllEntries:`SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname,a.image
+    getAllEntries:`SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
                     FROM entries AS e
                     INNER JOIN authors AS a
                     ON e.id_author=a.id_author
@@ -26,9 +26,9 @@ const queries={
     getAllAuts:`SELECT *
                 FROM authors
                 ORDER BY authors.name`,
-    createAut: `INSERT INTO authors(name,surname,email,image,password)
+    createAut: `INSERT INTO authors(name,surname,email,password)
                 VALUES
-                ($1, $2, $3, $4, $5)`,
+                ($1, $2, $3, $4)`,
     deleteAut:`DELETE FROM authors
                WHERE email=$1`,
     updateAut:`UPDATE authors

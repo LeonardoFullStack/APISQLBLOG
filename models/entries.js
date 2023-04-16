@@ -74,6 +74,7 @@ const getAllEntriesConnect =async () => {
         client = await pool.connect()
         const data = await client.query(queries.getAllEntries)
         result=data.rows
+       
         
 
     } catch (error) {
