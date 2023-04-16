@@ -1,11 +1,13 @@
-const { updateByIdConnect ,getEntriesByEmail, createEntriesByEmail, deleteEntriesByEmail, updateEntriesById, getAllEntriesConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
+const express = require('express');
+
+const { updateByIdConnect ,getEntriesByEmail, createEntriesByEmail,getAllEntriesConnect ,deleteEntriesByEmail, updateEntriesById, getAllEntriesByPageConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
 
 const { getAuthByEmail } = require('../models/author');
 
 
 const getEntries = async (req, res) => {
     let data, msg, ok, userExists
-    let email = req.query.email
+    let {email, pag} = req.query
 
 
     try {
@@ -21,12 +23,18 @@ const getEntries = async (req, res) => {
                 msg = `entradas del usuario ${email}`
             }
 
-        } else {
+        } else if (pag) {
            
-            data = await getAllEntries()
+            data = await getAllEntriesByPage(pag)
            
             ok = true
             msg = 'Todas las entradas'
+        } else {
+            data = await getAllEntries(1)
+           
+            ok = true
+            msg = 'Todas las entradas'
+
         }
         res.status(200).json({
             ok: true,
@@ -44,10 +52,32 @@ const getEntries = async (req, res) => {
 
 }
 
-const getAllEntries = async () => {
+const getAllEntries = async (pag) => {
     let data;
+
+
     try {
+        
         data = await getAllEntriesConnect()
+        
+        
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: 'contacta con el administrador'
+        })
+    }
+    return data
+}
+
+const getAllEntriesByPage = async (pag) => {
+    let data;
+    const page = (pag-1) * 4
+
+    try {
+        
+        data = await getAllEntriesByPageConnect(page)
         
         
 
@@ -149,7 +179,6 @@ const updateEntries = async (req, res) => {
     const { email, title, content, category, entryImage, extract } = req.body
     const oldTitle = req.params.title
 
-    console.log(entryImage)
     let titleExists = await getAllEntries()
     let sameEntry = titleExists.filter(object => object.title.includes(oldTitle))
 

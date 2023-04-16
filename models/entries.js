@@ -66,13 +66,34 @@ const createEntriesByEmail =async (title,content,email,category,entryImage,extra
     return data
 }
 
-//ACCEDER A TODAS LAS ENTRADAS
-const getAllEntriesConnect =async () => {
+const getAllEntriesConnect =async (pag) => {
     let client, result;
     try {
 
         client = await pool.connect()
         const data = await client.query(queries.getAllEntries)
+        result=data.rows
+       
+        
+
+    } catch (error) {
+     
+        throw error
+    } finally {
+        client.release()
+    }
+
+   return result
+
+}
+
+//ACCEDER A LAS ENTRADAS POR PÁGINA
+const getAllEntriesByPageConnect =async (pag) => {
+    let client, result;
+    try {
+
+        client = await pool.connect()
+        const data = await client.query(queries.getAllEntriesByPage, [pag])
         result=data.rows
        
         
@@ -151,10 +172,11 @@ module.exports={
     createEntriesByEmail,
     deleteEntriesByEmail,
     updateEntriesById,
-    getAllEntriesConnect,
+    getAllEntriesByPageConnect,
     getOneConnect,
     deleteByIdConnect,
-    updateByIdConnect
+    updateByIdConnect,
+    getAllEntriesConnect
     
 }
 

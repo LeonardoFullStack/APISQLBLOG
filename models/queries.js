@@ -6,11 +6,17 @@ const queries={
     ON e.id_author=a.id_author
     WHERE a.email=$1
     ORDER BY e.date DESC;`,
-    getAllEntries:`SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
+    getAllEntriesByPage:`SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
                     FROM entries AS e
                     INNER JOIN authors AS a
                     ON e.id_author=a.id_author
-                    ORDER BY e.id_entry DESC;`,
+                    ORDER BY e.id_entry DESC
+                    LIMIT 4
+                    OFFSET $1`,
+    getAllEntries: `SELECT *
+                    FROM entries AS e
+                    INNER JOIN authors AS a
+                    ON e.id_author=a.id_author`,
     createEntries: `INSERT INTO entries(title,content,id_author,category,entryImage,extract)
                     VALUES
                     ($1, $2, (SELECT id_author FROM authors WHERE email=$3),$4,$5,$6)`,

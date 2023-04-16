@@ -5,7 +5,7 @@ const {validationResult}=require('express-validator')
 const validarInputs=(req,res,next)=>{
 
     const errors=validationResult(req)
-    console.log(errors)
+
     if(errors.isEmpty()){
       next()
     }else{ return res.status(404).json({
