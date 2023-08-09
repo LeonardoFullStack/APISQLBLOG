@@ -6,7 +6,7 @@ const router=express.Router()
 
 const {getAuthor,createAuthor,deleteAuthor,updateAuthor} = require('../controllers/apiAuthControllers')
 
-router.get('/',getAuthor);
+router.post('/',getAuthor);
 router.post('/',[
     check('name','Tienes que poner un nombre').not().isEmpty(),
     check('email', 'el email no es válido').not().isEmpty().isEmail(),

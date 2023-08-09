@@ -10,7 +10,7 @@ const {createEntries,deleteEntries,getEntries,updateEntries, getOneEntry, delete
 router.get('/',getEntries);
 router.post('/',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
-    check('email', 'No se encuentra el campo email').not().isEmpty(),
+    check('name', 'No se encuentra el campo nombre').not().isEmpty(),
     check('content', 'Tienes que poner un contenido').not().isEmpty(),
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     check('extract', 'Tienes que poner una categoría').not().isEmpty(),
@@ -22,7 +22,7 @@ validarInputs
 router.delete('/delbyid/:id', deleteById)
 router.put('/:title',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
-    check('email', 'No se encuentra el campo email').not().isEmpty(),
+    check('name', 'No se encuentra el campo nombre').not().isEmpty(),
     check('content', 'Tienes que poner un contenido').not().isEmpty(),
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     validarInputs

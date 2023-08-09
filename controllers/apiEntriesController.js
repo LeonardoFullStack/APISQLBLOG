@@ -1,8 +1,20 @@
 const express = require('express');
 
-const { updateByIdConnect ,getEntriesByEmail, createEntriesByEmail,getAllEntriesConnect ,deleteEntriesByEmail, updateEntriesById, getAllEntriesByPageConnect,getOneConnect, deleteByIdConnect } = require('../models/entries')
+const { updateByIdConnect,
+    getEntriesByEmail, 
+    createEntriesByEmail,
+    getAllEntriesConnect,
+    deleteEntriesByEmail, 
+    updateEntriesById, 
+    getAllEntriesByPageConnect,
+    getOneConnect, 
+    deleteByIdConnect,
+    
+ } = require('../models/entries')
 
-const { getAuthByEmail } = require('../models/author');
+const { getAuthByEmail,
+        getEmailByName
+ } = require('../models/author');
 
 
 const getEntries = async (req, res) => {
@@ -91,7 +103,8 @@ const getAllEntriesByPage = async (pag) => {
 }
 
 const createEntries = async (req, res) => {
-    const { title, content, email, category, extract, entryImage } = req.body
+    const { title, content, name, category, extract, entryImage } = req.body
+    const email = await getEmailByName(name)
     let userExists = await getAuthByEmail(email)
     let entries = await getEntriesByEmail(email)
     let titleExists = entries.filter(entry => entry.title == title)

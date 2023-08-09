@@ -40,3 +40,15 @@ VALUES
 ('Amanece Madrid lleno de arena','La calima...','http://aicmweb.com/wp-content/uploads/2018/03/blog-49006_960_720.png' ,'La calima satura Madrid de arena. Pérdidas millonarias',(SELECT id_author FROM authors WHERE email='maria@correo.es'),'Sucesos'),
 ('Descubren el motor de agua','Fin de la...','http://aicmweb.com/wp-content/uploads/2018/03/blog-49006_960_720.png' ,'Fin de la gasolina. A partir de ahora usaremos agua en nuestros coches',(SELECT id_author FROM authors WHERE email='juan@correo.es'),'Ciencia'),
 ('Zersat llega con su nave','Zersat por fin...', 'https://www.cordobahoy.es/asset/thumbnail,992,558,center,center/media/cordobahoy/images/2021/06/26/2021062611105040754.jpg','Zersat llega y pone fin a las guerras.A las guerras y a todo.',(SELECT id_author FROM authors WHERE email='juan@correo.es'),'Religión')
+
+
+  --VERSIÓN 2!!! MINI-TWITTER
+  --creamos la tabla REPLIES
+  CREATE TABLE replies (
+    id_reply serial NOT NULL PRIMARY KEY,
+    date varchar(10) DEFAULT to_char(date_trunc('day', CURRENT_DATE), 'dd/mm/yyyy'),
+    has_image BOOLEAN NOT NULL,
+    image varchar(255),
+    content text NOT NULL, 
+    FOREIGN KEY (id_entry) REFERENCES entries(id_entry)
+  )

@@ -16,8 +16,9 @@ app.use(express.json())
 app.use(express.static(__dirname+'/public'))
 
 
-app.use('/api/entries',require('./routers/apiEntriesRoute'))
-app.use('/api/aut',require('./routers/apiAutRoute'))
+app.use('/api/entries',require('./routers/apiEntriesRoute'));
+app.use('/api/aut',require('./routers/apiAutRoute'));
+app.use('/api/replies',require('./routers/apiReplies'))
 
 
 app.listen(port,()=>{

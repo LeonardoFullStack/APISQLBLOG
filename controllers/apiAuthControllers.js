@@ -1,60 +1,74 @@
 const { getAuthByEmail, createAutConnect, deleteAutConnect, updateAutConnect, getAllAuthsConnect } = require('../models/author');
 const { getAllAuts, } = require('../models/queries');
-const {generarJwt,generarJwtAdmin} = require('../helpers/jwt')
+const { generarJwt, generarJwtAdmin } = require('../helpers/jwt')
+const bcrypt = require('bcryptjs')
 
 const getAuthor = async (req, res) => {
-    let data, msg,token,tokenz
-    let email = req.query.email
-    
+    let data, msg, token, tokenz, passwordOk
+    let { email, password } = req.body
+    console.log(email,password)
+
     try {
-        if (email) {
+        const consulta = await getAuthByEmail(email)
+        console.log(consulta, 'consul')
 
-            
-            const consulta = await getAuthByEmail(email)
-           
 
-            if (consulta.ok) {
+        if (consulta.ok) {
 
-                msg = 'Se ha encontrado el usuario'
-                
-                if (consulta.data[0].isadmin) {
-                     token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name)
-                     tokenz = await generarJwtAdmin(consulta.data[0].id_author, consulta.data[0].name)
-                     res.status(200).json({
+            if (consulta.data[0].isadmin) {
+                console.log(consulta.data[0].password)
+                passwordOk = bcrypt.compareSync(password, consulta.data[0].password)
+                console.log(passwordOk)
+
+                if (passwordOk) {
+                    token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name);
+                    tokenz = await generarJwtAdmin(consulta.data[0].id_author, consulta.data[0].name);
+                    msg = 'Login correcto'
+                    res.status(200).json({
                         ok: true,
                         msg,
-                        data: consulta.data,
                         token,
                         tokenz
                     })
                 } else {
-                     token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name)
-                     res.status(200).json({
-                        ok: true,
-                        msg,
-                        data: consulta.data,
-                        token
+                    msg = 'Login fallido'
+                    res.status(400).json({
+                        ok: false,
+                        msg
                     })
                 }
-                
-                
-            } else if (!consulta.ok) {
-                msg = 'No se ha encontrado ningún usuario con ese email'
-                res.status(404).json({
-                    ok: false,
-                    msg
-                })
+
+            } else {
+                passwordOk = bcrypt.compareSync(password, consulta.data[0].password);
+
+                if (passwordOk) {
+                    token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name);
+                    msg = 'Login correcto'
+                    res.status(200).json({
+                        ok: true,
+                        msg,
+                        token
+                    })
+                } else {
+                    msg = 'Login fallido'
+                    res.status(400).json({
+                        ok: false,
+                        msg
+                    })
+                }
+
             }
 
-        } else {
-            data = await getAllAuths()
-            msg = 'Todos los usuarios'
-            res.status(200).json({
-                ok: true,
-                msg,
-                data
+
+        } else if (!consulta.ok) {
+            msg = 'No se ha encontrado al usuario'
+            res.status(404).json({
+                ok: false,
+                msg
             })
         }
+
+
 
 
 
@@ -86,7 +100,7 @@ const createAuthor = async (req, res) => {
     const { name, surname, email, password } = req.body
     const emailLibre = await getAuthByEmail(email)
     let token;
-    
+
     if (!emailLibre.ok) {
         try {
             const data = await createAutConnect(name, surname, email, password)
@@ -102,7 +116,7 @@ const createAuthor = async (req, res) => {
                     password,
                 },
                 token
-                
+
             })
         } catch (error) {
             res.status(500).json({
@@ -121,7 +135,7 @@ const createAuthor = async (req, res) => {
 const deleteAuthor = async (req, res) => {
 
     let email = req.params.email
-  
+
 
 
     try {

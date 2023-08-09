@@ -7,12 +7,12 @@ const queries={
     WHERE a.email=$1
     ORDER BY e.date DESC;`,
     getAllEntriesByPage:`SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
-                    FROM entries AS e
-                    INNER JOIN authors AS a
-                    ON e.id_author=a.id_author
-                    ORDER BY e.id_entry DESC
-                    LIMIT 4
-                    OFFSET $1`,
+                         FROM entries AS e
+                         INNER JOIN authors AS a
+                         ON e.id_author=a.id_author
+                         ORDER BY e.id_entry DESC
+                         LIMIT 4
+                         OFFSET $1`,
     getAllEntries: `SELECT *
                     FROM entries AS e
                     INNER JOIN authors AS a
@@ -29,6 +29,9 @@ const queries={
     getAut: `SELECT *
              FROM authors
              WHERE email=$1`,
+    getAutByName: `SELECT *
+                   FROM authors
+                   WHERE name=$1`,
     getAllAuts:`SELECT *
                 FROM authors
                 ORDER BY authors.name`,
@@ -38,18 +41,24 @@ const queries={
     deleteAut:`DELETE FROM authors
                WHERE email=$1`,
     updateAut:`UPDATE authors
-                SET name =$2 , surname=$3 , email=$4, image=$5, password=$6
-                WHERE email=$1`,
+               SET name =$2 , surname=$3 , email=$4, image=$5, password=$6
+               WHERE email=$1`,
     getOneEntry:`SELECT *, a.id_author
-    FROM entries AS e
-    INNER JOIN authors AS a
-    ON e.id_author=a.id_author
-    WHERE e.id_entry=$1`,
+                 FROM entries AS e
+                 INNER JOIN authors AS a
+                 ON e.id_author=a.id_author
+                 WHERE e.id_entry=$1`,
     deleteEntryById: `DELETE FROM entries
                       WHERE id_entry=$1`,
     updateEntryById:`UPDATE entries
-                    SET title =$2 , content=$3 , category=$4, entryImage=$5, extract=$6
-                    WHERE id_entry=$1`
+                     SET title =$2 , content=$3 , category=$4, entryImage=$5, extract=$6
+                     WHERE id_entry=$1`,
+    getAllRepliesFromAEntry:`SELECT * FROM replies
+                             WHERE id_entry=$1
+                             ORDER BY date DESC`,
+    createReplyFromEntryId: `INSERT INTO replies(id_entry,name,has_image,image,content)
+                            VALUES
+                            ((SELECT id_entry FROM entries WHERE id_entry=$1),(SELECT avatar FROM authors WHERE name = $1),$3,$4,$5)`
 
 }
 
