@@ -22,13 +22,14 @@ const { getRepliesByIdModel } = require('../models/replies')
 const getEntries = async (req, res) => {
     let data, msg, ok, userExists
     let { email, pag } = req.query
+    console.log('por akiii')
 
 
     try {
-
+        console.log('premail')
         if (email) {
 
-
+            console.log('mail')
             data = await getEntriesByEmail(email)
             if (data.length == 0) {
                 ok = true;
@@ -38,14 +39,15 @@ const getEntries = async (req, res) => {
             }
 
         } else if (pag) {
-
+            console.log('pagina')
             data = await getAllEntriesByPage(pag)
             console.log(data)
             ok = true
             msg = 'Todas las entradas'
         } else {
+            console.log('predata')
             data = await getAllEntries(1)
-
+            console.log('postdata')
             ok = true
             msg = 'Todas las entradas'
 
