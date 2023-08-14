@@ -4,18 +4,29 @@ const {validarInputs} =  require('../middleware/validarInputs')
 const router=express.Router()
 
 
-const {createEntries,deleteEntries,getEntries,updateEntries, getOneEntry, deleteById, updateById} = require('../controllers/apiEntriesController')
+const {
+    createEntries,
+    deleteEntries,
+    getEntries,
+    updateEntries, 
+    getOneEntry, 
+    deleteById, 
+    updateById,
+    getMyEntries,
+    createEntriesV2
+} = require('../controllers/apiEntriesController')
 
 
 router.get('/',getEntries);
-router.post('/',[
+router.post('/', getMyEntries)
+router.post('/create',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
     check('name', 'No se encuentra el campo nombre').not().isEmpty(),
     check('content', 'Tienes que poner un contenido').not().isEmpty(),
     check('category', 'Tienes que poner una categoría').not().isEmpty(),
     check('extract', 'Tienes que poner una categoría').not().isEmpty(),
     validarInputs
-],createEntries);
+],createEntriesV2);
 router.delete('/:title',[check('email', 'No se encuentra el campo email').not().isEmpty(),
 validarInputs
 ],deleteEntries);

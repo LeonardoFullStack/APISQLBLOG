@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 
-const generarJwt = (uid, name) => {
+const generarJwt = (uid, name, isAdmin) => {
     
     return new Promise((resolve, reject)=>{
-        let payload = {uid,name};
+        let payload = {uid,name,isAdmin};
         jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn:'3h'},(error,token)=>{
             if (error) {
                 reject('error al generar el token')
@@ -30,6 +30,7 @@ const generarJwtAdmin = (uid, name) => {
     })
 
 }
+
 
 module.exports = {
     generarJwt,

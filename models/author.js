@@ -60,6 +60,29 @@ const getEmailByName = async (name) => {
     return data.rows[0].email
 }
 
+const getAuthByName = async (name) => {
+    let client,data;
+    try {
+        client = await pool.connect()
+        data = await client.query(queries.getAutByName, [name])
+    } catch (error) {
+        console.log(error)
+    } finally {
+        client.release()
+    }
+
+    if (data.rows.length == 0) {
+        return {
+            ok:false
+        }
+    } else {
+        return {
+            ok:true,
+            data:data.rows
+        }
+    }
+}
+
 //TRAER TODOS LOS AUTORES
 const getAllAuthsConnect =async () => {
     let client, result;
@@ -81,13 +104,13 @@ const getAllAuthsConnect =async () => {
 }
 
 //CREAR AUTOR
-const createAutConnect =async (name, surname, email, password) => {
+const createAutConnect =async (name, surname, email, password, avatar) => {
     let respuesta;
 
     try {
         client = await pool.connect()
-
-        const data = await client.query(queries.createAut, [name,surname,email, password])
+        console.log('llegooooo')
+        const data = await client.query(queries.createAut, [name,surname,email, password, avatar])
         respuesta = data.rows
     } catch (error) {
         throw error
@@ -139,5 +162,6 @@ module.exports = {
     deleteAutConnect,
     updateAutConnect,
     getAllAuthsConnect,
-    getEmailByName
+    getEmailByName,
+    getAuthByName
 }

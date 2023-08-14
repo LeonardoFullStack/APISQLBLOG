@@ -29,12 +29,47 @@ const getRepliesByIdModel = async (id_entry) => {
     return result
 }
 
-const createReplyByIdModel = async (id_entry,has_image,image,content) => {
+const createReplyByIdModel = async (id_entry,name,has_image,image,content) => {
     let client,result;
+    console.log(id_entry,name,has_image,image,content)
     try {
 
         client = await pool.connect();
-        const data = await client.query(queries.createReplyFromEntryId, [id_entry,has_image,image,content])
+        const data = await client.query(queries.createReplyFromEntryId, [id_entry,name,has_image,image,content])
+        result = data.rows
+
+    } catch (error) {
+        throw error
+    } finally {
+        client.release()
+    }
+    return result
+}
+
+const addReplyIntegerModel = async (id) => {
+    let client,result;
+    console.log(id)
+    try {
+
+        client = await pool.connect();
+        const data = await client.query(queries.addReplyInteger, [id])
+        result = data.rows
+
+    } catch (error) {
+        throw error
+    } finally {
+        client.release()
+    }
+    return result
+}
+
+const deleteReplyByIdModel = async (id) => {
+    let client,result;
+    console.log(id)
+    try {
+
+        client = await pool.connect();
+        const data = await client.query(queries.deleteReplyByIdQuery, [id])
         result = data.rows
 
     } catch (error) {
@@ -47,5 +82,7 @@ const createReplyByIdModel = async (id_entry,has_image,image,content) => {
 
 module.exports = {
     getRepliesByIdModel,
-    createReplyByIdModel
+    createReplyByIdModel,
+    addReplyIntegerModel,
+    deleteReplyByIdModel
 }
