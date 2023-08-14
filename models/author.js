@@ -2,10 +2,10 @@ const { Pool } = require('pg')
 const queries = require('./queries')
 
 const pool = new Pool({
-    host: 'kandula.db.elephantsql.com',
-    user: 'xrkzcuuj',
-    database: 'xrkzcuuj',
-    password: 'Cu7FxPLSMPrpy6YmtbV620-TT-hPqxCh',
+    host: process.env.HOST_PG,
+    user: process.env.USER_PG,
+    database: process.env.USER_PG,
+    password: process.env.PASS_PG,
     port: 5432, // Puerto por defecto para PostgreSQL
     ssl: {
       rejectUnauthorized: false // Habilitar SSL sin verificar el certificado
@@ -41,9 +41,46 @@ const getAuthByEmail = async (email) => {
     } finally {
         client.release()
     }
-
+    console.log(respuesta)
     return respuesta
 
+}
+
+const getEmailByName = async (name) => {
+    let client,data;
+    try {
+        client = await pool.connect()
+        data = await client.query(queries.getAutByName, [name])
+    } catch (error) {
+        console.log(error)
+    } finally {
+        client.release()
+    }
+
+    return data.rows[0].email
+}
+
+const getAuthByName = async (name) => {
+    let client,data;
+    try {
+        client = await pool.connect()
+        data = await client.query(queries.getAutByName, [name])
+    } catch (error) {
+        console.log(error)
+    } finally {
+        client.release()
+    }
+
+    if (data.rows.length == 0) {
+        return {
+            ok:false
+        }
+    } else {
+        return {
+            ok:true,
+            data:data.rows
+        }
+    }
 }
 
 //TRAER TODOS LOS AUTORES
@@ -67,13 +104,13 @@ const getAllAuthsConnect =async () => {
 }
 
 //CREAR AUTOR
-const createAutConnect =async (name, surname, email, password) => {
+const createAutConnect =async (name, surname, email, password, avatar) => {
     let respuesta;
 
     try {
         client = await pool.connect()
-
-        const data = await client.query(queries.createAut, [name,surname,email, password])
+        console.log('llegooooo')
+        const data = await client.query(queries.createAut, [name,surname,email, password, avatar])
         respuesta = data.rows
     } catch (error) {
         throw error
@@ -124,5 +161,7 @@ module.exports = {
     createAutConnect,
     deleteAutConnect,
     updateAutConnect,
-    getAllAuthsConnect
+    getAllAuthsConnect,
+    getEmailByName,
+    getAuthByName
 }
