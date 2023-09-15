@@ -167,6 +167,34 @@ const updateByIdConnect =async (title, content, category, entryImage, extract, i
     return data.rows
 }
 
+const showCategories = async () => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.showCategories)
+    } catch (error) {
+       
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
+const showEntriesByCategoryConnect = async (category) => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.showEntriesByCategory, [category])
+    } catch (error) {
+       
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
 module.exports={
     getEntriesByEmail,
     createEntriesByEmail,
@@ -176,7 +204,9 @@ module.exports={
     getOneConnect,
     deleteByIdConnect,
     updateByIdConnect,
-    getAllEntriesConnect
+    getAllEntriesConnect,
+    showCategories,
+    showEntriesByCategoryConnect
     
 }
 

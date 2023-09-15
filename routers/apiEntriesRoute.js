@@ -13,12 +13,19 @@ const {
     deleteById, 
     updateById,
     getMyEntries,
-    createEntriesV2
+    createEntriesV2,
+    entriesProof,
+    getCategories,
+    getSearch
 } = require('../controllers/apiEntriesController')
 
+router.post('/pruebichi', entriesProof)
+
+router.get('/categorias/', getCategories)
 
 router.get('/',getEntries);
-router.post('/', getMyEntries)
+router.post('/', getMyEntries);
+router.get('/search/:search', getSearch)
 router.post('/create',[
     check('title','Tienes que poner un nombre').not().isEmpty(),
     check('name', 'No se encuentra el campo nombre').not().isEmpty(),

@@ -4,10 +4,24 @@ const {validarInputs} =  require('../middleware/validarInputs')
 
 const router=express.Router()
 
-const {getAuthor,createAuthor,deleteAuthor,updateAuthor,createAuthor2, jwtVerify} = require('../controllers/apiAuthControllers')
+const {getAuthor,
+    createAuthor,
+    deleteAuthor,
+    updateAuthor,
+    createAuthor2, 
+    jwtVerify,
+    newFollower,
+    deleteFollow,
+    showFollowersByToken,
+    getProfileByToken
+} = require('../controllers/apiAuthControllers')
 
 router.post('/',getAuthor);
 router.post('/verifytoken', jwtVerify)
+router.post('/myfollows/', showFollowersByToken);
+router.post('/profile/', getProfileByToken)
+router.post('/follows/new/', newFollower)
+router.delete('/follows/del/', deleteFollow)
 router.post('/create', createAuthor2)
 router.delete('/:email',deleteAuthor);
 router.put('/:email',[

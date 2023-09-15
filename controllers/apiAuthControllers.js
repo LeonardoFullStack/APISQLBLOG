@@ -4,8 +4,12 @@ const { getAuthByEmail,
     updateAutConnect,
     getAllAuthsConnect,
     getEmailByName,
-    getAuthByName
+    getAuthByName,
+    newFollowerConnect,
+    deleteFollowerConnect,
+    showFollowersConnect
 } = require('../models/author');
+
 const { getAllAuts, } = require('../models/queries');
 const { generarJwt, generarJwtAdmin } = require('../helpers/jwt')
 const bcrypt = require('bcryptjs')
@@ -257,11 +261,78 @@ const jwtVerify = async (req, res) => {
     }
 }
 
+const newFollower = async (req,res) => {
+    const follower = req.body.follower
+    const following = req.body.following
+
+    try {
+        const newFollower = newFollowerConnect(follower, following)
+        res.status(200).json({
+            ok:true,
+            msg:'Se ha añadido a seguidos'
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            error
+        })
+    }
+
+}
+
+const deleteFollow = async (req,res) => {
+    const follower = req.body.follower
+    const following = req.body.following
+
+    try {
+        const newFollower = deleteFollowerConnect(follower, following)
+        res.status(200).json({
+            ok:true,
+            msg:'Se ha eliminado de seguidos'
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            error
+        })
+    }
+
+}
+
+const showFollowersByToken = async (req,res) => {
+    const token = req.body.token
+    try {
+        let decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY)
+        let {isAdmin, name} = await decoded
+
+        const showFollowers = await showFollowersConnect(name)
+        res.status(200).json({
+            ok:true,
+            msg:`Todos los seguidores de ${name}`,
+            showFollowers
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            error
+        })
+    }
+}
+
+const getProfileByToken = async (req,res) => {
+
+}
+
+
 module.exports = {
     getAuthor,
     createAuthor,
     deleteAuthor,
     updateAuthor,
     createAuthor2,
-    jwtVerify
+    jwtVerify,
+    newFollower,
+    deleteFollow,
+    showFollowersByToken,
+    getProfileByToken
 }

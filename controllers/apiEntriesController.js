@@ -9,6 +9,8 @@ const { updateByIdConnect,
     getAllEntriesByPageConnect,
     getOneConnect,
     deleteByIdConnect,
+    showCategories,
+    showEntriesByCategoryConnect
 
 } = require('../models/entries')
 
@@ -22,11 +24,11 @@ const { getRepliesByIdModel } = require('../models/replies')
 const getEntries = async (req, res) => {
     let data, msg, ok, userExists
     let { email, pag } = req.query
-    console.log('por akiii')
+    
 
 
     try {
-        console.log('premail')
+        
         if (email) {
 
             console.log('mail')
@@ -219,6 +221,65 @@ const createEntriesV2 = async (req, res) => {
     }
 }
 
+const entriesProof = async (req,res) => {
+    console.log(req)
+}
+
+const getCategories = async (req, res) => {
+    const category = req.query.q
+
+    if (category) {
+        try {
+            const entriesByCategory = await showEntriesByCategoryConnect(category)
+
+            if (entriesByCategory.length == 0) {
+                res.status(400).json({
+                    ok:false,
+                    msg:`No se han encontrado entradas con la categoría ${category}`
+                    
+                })
+            } else {
+                res.status(200).json({
+                    ok:true,
+                    category,
+                    entriesByCategory
+                    
+                })
+            }
+            
+           
+        } catch (error) {
+            res.status(400).json({
+                ok: false,
+                msg: 'Contacta con el administrador',
+                error
+            })
+        }
+    } else {
+
+        try {
+            const categories = await showCategories();
+            
+            if (categories.length > 4) {
+                categories.splice(4)
+            }
+
+            res.status(200).json({
+             ok:true,
+             msg:'Todas las categorías con su número de entradas correspondientes',
+             categories
+            }) 
+        } catch (error) {
+            res.status(400).json({
+                ok:false,
+                error
+            })
+        }
+        
+    }
+
+}
+
 
 
 const deleteEntries = async (req, res) => {
@@ -371,6 +432,50 @@ const updateById = async (req, res) => {
     }
 }
 
+const getSearch = async (req,res) => {
+    let search = req.params.search.toLowerCase()
+
+
+    try {
+
+    const data = await getAllEntries(1)
+    let dataSearch = []
+    const title = item.title.toLowerCase();
+    const name = item.name.toLowerCase();
+    const content = item.content.toLowerCase();
+    const extract = item.extract.toLowerCase();
+    const category = item.category.toLowerCase();
+    
+    data.forEach(item =>{
+       
+        if (title.includes(search) || name.includes(search) || content.includes(search)|| extract.includes(search) || category.includes(search)) {
+         dataSearch.push(item)
+        }
+    })
+
+    if (dataSearch.length == 0) {
+        res.status(200).json({
+            ok:true,
+            msg:'No se han encontrado entradas con ésta búsqueda'
+        })
+    } else {
+        res.status(200).json({
+            ok:true,
+            msg:`Se han encontrado ${dataSearch.length} entrada/s`,
+            data: dataSearch
+        })
+    }
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            msg: error
+        })
+    }
+
+    
+}
+
 module.exports = {
     getEntries,
     createEntries,
@@ -380,6 +485,9 @@ module.exports = {
     deleteById,
     updateById,
     getMyEntries,
-    createEntriesV2
+    createEntriesV2,
+    entriesProof,
+    getCategories,
+    getSearch
 }
 

@@ -156,6 +156,52 @@ const updateAutConnect =async (emailViejo, name, surname, email,image,  password
     return data.rows
 }
 
+//NUEVO FOLLOWER
+const newFollowerConnect = async (follower, following) => {
+    let data,client
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.createFollower, [follower,following])
+        
+    } catch (error) {
+    
+       throw error 
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
+const deleteFollowerConnect = async (follower, following) => {
+    let data,client
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.deleteFollower, [follower,following])
+        
+    } catch (error) {
+    
+       throw error 
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
+const showFollowersConnect = async (follower) => {
+    let data,client
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.showFollowers, [follower])
+        
+    } catch (error) {
+    
+       throw error 
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
 module.exports = {
     getAuthByEmail,
     createAutConnect,
@@ -163,5 +209,8 @@ module.exports = {
     updateAutConnect,
     getAllAuthsConnect,
     getEmailByName,
-    getAuthByName
+    getAuthByName,
+    newFollowerConnect,
+    deleteFollowerConnect,
+    showFollowersConnect
 }
