@@ -19,7 +19,7 @@ const {getAuthor,
 router.post('/',getAuthor);
 router.post('/verifytoken', jwtVerify)
 router.post('/myfollows/', showFollowersByToken);
-router.post('/profile/', getProfileByToken)
+router.post('/myprofile/', getProfileByToken)
 router.post('/follows/new/', newFollower)
 router.delete('/follows/del/', deleteFollow)
 router.post('/create', createAuthor2)

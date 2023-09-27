@@ -7,13 +7,15 @@ const { getAuthByEmail,
     getAuthByName,
     newFollowerConnect,
     deleteFollowerConnect,
-    showFollowersConnect
+    showFollowersConnect,
+    getMyProfileConnect
 } = require('../models/author');
 
 const { getAllAuts, } = require('../models/queries');
 const { generarJwt, generarJwtAdmin } = require('../helpers/jwt')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
+const { decodedToken } = require('../helpers/decodeToken');
 
 const getAuthor = async (req, res) => {
     let data, msg, token, tokenz, passwordOk
@@ -302,13 +304,12 @@ const deleteFollow = async (req,res) => {
 const showFollowersByToken = async (req,res) => {
     const token = req.body.token
     try {
-        let decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY)
-        let {isAdmin, name} = await decoded
+        const nameOfToken = await decodedToken(token);
 
-        const showFollowers = await showFollowersConnect(name)
+        const showFollowers = await showFollowersConnect(nameOfToken.name)
         res.status(200).json({
             ok:true,
-            msg:`Todos los seguidores de ${name}`,
+            msg:`Todos los seguidores de ${nameOfToken.name}`,
             showFollowers
         })
     } catch (error) {
@@ -320,7 +321,22 @@ const showFollowersByToken = async (req,res) => {
 }
 
 const getProfileByToken = async (req,res) => {
+    const token = req.body.token
 
+    try {
+        const nameOfToken = await decodedToken(token);
+        const req = await getMyProfileConnect(nameOfToken.name)
+        res.status(200).json({
+            ok:true,
+            msg: 'Datos de tu perfil',
+            data: req
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            error
+        })
+    }
 }
 
 

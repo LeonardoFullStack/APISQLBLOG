@@ -84,7 +84,10 @@ const queries = {
                     AND following = (SELECT name FROM authors WHERE name = $2)`,
     showFollowers:`SELECT *
                    FROM follows
-                   WHERE follower = $1`
+                   WHERE follower = $1`,
+    getMyProfile:`SELECT a.name, a.background, a.surname, a.email, a.avatar, a.isAdmin, a.joined, a.description
+                  FROM authors as a
+                  WHERE a.name=$1`
 
 }
 
