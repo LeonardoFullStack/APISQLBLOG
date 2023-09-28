@@ -8,7 +8,8 @@ const { getAuthByEmail,
     newFollowerConnect,
     deleteFollowerConnect,
     showFollowersConnect,
-    getMyProfileConnect
+    getMyProfileConnect,
+    getAllFollowsConnect
 } = require('../models/author');
 
 const { getAllAuts, } = require('../models/queries');
@@ -16,6 +17,7 @@ const { generarJwt, generarJwtAdmin } = require('../helpers/jwt')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken');
 const { decodedToken } = require('../helpers/decodeToken');
+const { getLastEntriesFromAuthConnect } = require('../models/entries');
 
 const getAuthor = async (req, res) => {
     let data, msg, token, tokenz, passwordOk
@@ -321,15 +323,25 @@ const showFollowersByToken = async (req,res) => {
 }
 
 const getProfileByToken = async (req,res) => {
-    const token = req.body.token
+    const {token, page} = req.body
+    const offSet = (page - 1) * 4 //las entradas a saltar según la página
 
     try {
         const nameOfToken = await decodedToken(token);
         const req = await getMyProfileConnect(nameOfToken.name)
+        const pageEntries = await getLastEntriesFromAuthConnect(nameOfToken.name, 0)
+        const entries = await getLastEntriesFromAuthConnect(nameOfToken.name, offSet)
+        const follows = await getAllFollowsConnect(nameOfToken.name)
+        const pages = Math.ceil(pageEntries.length / 4)
+        const entriesSliced = entries.slice(0, 4)
+
         res.status(200).json({
             ok:true,
             msg: 'Datos de tu perfil',
-            data: req
+            data: req,
+            follows:follows[0],
+            entries:entriesSliced,
+            pages
         })
     } catch (error) {
         res.status(400).json({

@@ -195,6 +195,20 @@ const showEntriesByCategoryConnect = async (category) => {
     return data.rows
 }
 
+const getLastEntriesFromAuthConnect = async (name, offSet) => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.getLastEntriesFromAuth, [name, offSet])
+    } catch (error) {
+       
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
 module.exports={
     getEntriesByEmail,
     createEntriesByEmail,
@@ -206,7 +220,8 @@ module.exports={
     updateByIdConnect,
     getAllEntriesConnect,
     showCategories,
-    showEntriesByCategoryConnect
+    showEntriesByCategoryConnect,
+    getLastEntriesFromAuthConnect
     
 }
 

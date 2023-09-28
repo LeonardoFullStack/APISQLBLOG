@@ -16,7 +16,8 @@ const {
     createEntriesV2,
     entriesProof,
     getCategories,
-    getSearch
+    getSearch,
+    getEntriesByName
 } = require('../controllers/apiEntriesController')
 
 router.post('/pruebichi', entriesProof)
@@ -25,6 +26,7 @@ router.get('/categorias/', getCategories)
 
 router.get('/',getEntries);
 router.post('/', getMyEntries);
+router.post('/allmyentries', getEntriesByName)
 router.get('/search/:search', getSearch)
 router.post('/create',[
     check('title','Tienes que poner un nombre').not().isEmpty(),

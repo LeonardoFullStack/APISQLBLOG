@@ -85,9 +85,19 @@ const queries = {
     showFollowers:`SELECT *
                    FROM follows
                    WHERE follower = $1`,
-    getMyProfile:`SELECT a.name, a.background, a.surname, a.email, a.avatar, a.isAdmin, a.joined, a.description
+    getMyProfile:`SELECT a.name, a.background, a.website, a.surname, a.email, a.avatar, a.isAdmin, a.joined, a.description
                   FROM authors as a
-                  WHERE a.name=$1`
+                  WHERE a.name=$1`,
+    getAllFollows:`SELECT 
+                  (SELECT COUNT(*) FROM follows WHERE follower = $1) as followingcounter,
+                  (SELECT COUNT(*) FROM follows WHERE following = $1) as followercounter;
+                  `,
+    getLastEntriesFromAuth:`SELECT entries.*, authors.name as "author.name"
+                            FROM entries
+                            JOIN authors ON entries.id_author = authors.id_author
+                            WHERE authors.name = $1
+                            OFFSET $2;
+                           `
 
 }
 

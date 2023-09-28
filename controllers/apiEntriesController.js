@@ -10,7 +10,8 @@ const { updateByIdConnect,
     getOneConnect,
     deleteByIdConnect,
     showCategories,
-    showEntriesByCategoryConnect
+    showEntriesByCategoryConnect,
+    getLastEntriesFromAuthConnect
 
 } = require('../models/entries')
 
@@ -18,7 +19,8 @@ const { getAuthByEmail,
     getEmailByName
 } = require('../models/author');
 
-const { getRepliesByIdModel } = require('../models/replies')
+const { getRepliesByIdModel } = require('../models/replies');
+const { decodedToken } = require('../helpers/decodeToken');
 
 
 const getEntries = async (req, res) => {
@@ -476,6 +478,29 @@ const getSearch = async (req,res) => {
     
 }
 
+const getEntriesByName = async (req,res) => {
+    const {token, page} = req.body
+    const body = {
+        token
+    }
+
+    try {
+        const nameOfToken = await decodedToken(token);
+        const request = await getLastEntriesFromAuthConnect(nameOfToken.name, page)
+        res.status(200).json({
+            ok:true,
+            msg:`Todas tus entradas`,
+            data:request
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok:false,
+            msg:`Contacta con el administrador`,
+            error
+        })
+    }
+}
+
 module.exports = {
     getEntries,
     createEntries,
@@ -488,6 +513,7 @@ module.exports = {
     createEntriesV2,
     entriesProof,
     getCategories,
-    getSearch
+    getSearch,
+    getEntriesByName
 }
 
