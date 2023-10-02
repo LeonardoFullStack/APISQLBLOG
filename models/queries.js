@@ -41,8 +41,8 @@ const queries = {
     deleteAut: `DELETE FROM authors
                WHERE email=$1`,
     updateAut: `UPDATE authors
-               SET name =$2 , surname=$3 , email=$4, image=$5, password=$6
-               WHERE email=$1`,
+               SET avatar =$2 , description=$3 , background=$4, website=$5
+               WHERE name=$1`,
     getOneEntry: `SELECT *, a.id_author
                  FROM entries AS e
                  INNER JOIN authors AS a

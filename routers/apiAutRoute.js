@@ -26,10 +26,9 @@ router.post('/follows/new/', newFollower)
 router.delete('/follows/del/', deleteFollow)
 router.post('/create', createAuthor2)
 router.delete('/:email',deleteAuthor);
-router.put('/:email',[
-    check('name','Tienes que poner un nombre').not().isEmpty(),
-    check('email', 'el email no es válido').not().isEmpty(),
-    check('surname', 'Tienes que poner un sobrenombre (surname)').not().isEmpty(),
+router.put('/editprofile',[
+    check('description','Tienes que poner una descripción').not().isEmpty(),
+    check('website', 'Falta el campo website').not().isEmpty(),
     validarInputs
 ],updateAuthor);
 

@@ -141,11 +141,11 @@ const deleteAutConnect =async (email) => {
     /* return data.rows */
 }
 //ACTUALIZAR AUTOR
-const updateAutConnect =async (emailViejo, name, surname, email,image,  password) => {
+const updateAutConnect =async (name, avatar, description, background, website) => {
     let data,client
     try {
          client = await pool.connect()
-         data = await client.query(queries.updateAut, [emailViejo, name, surname, email, image,password])
+         data = await client.query(queries.updateAut, [name, avatar, description, background, website])
         
     } catch (error) {
     

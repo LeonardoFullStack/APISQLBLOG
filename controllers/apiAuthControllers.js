@@ -216,28 +216,16 @@ const deleteAuthor = async (req, res) => {
 }
 
 const updateAuthor = async (req, res) => {
-    const { name, surname, email, image, password } = req.body
-    const emailViejo = req.params.email
+    const { name, avatar, description, background, website } = req.body
+
     try {
-        let userExists = await getAuthByEmail(emailViejo)
-        if (userExists.ok) {
-            const data = await updateAutConnect(emailViejo, name, surname, email, image, password)
+            const data = await updateAutConnect(name, avatar, description, background, website)
             res.status(200).json({
                 ok: true,
                 msg: 'Usuario actualizado',
-                data: {
-                    name,
-                    surname,
-                    email,
-                    image
-                }
+                data: {name, avatar, description, background, website}
             })
-        } else {
-            res.status(500).json({
-                ok: false,
-                msg: 'No se ha encontrado el autor'
-            })
-        }
+        
     } catch (error) {
         res.status(500).json({
             ok: false,
