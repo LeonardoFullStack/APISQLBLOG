@@ -17,7 +17,9 @@ const {
     entriesProof,
     getCategories,
     getSearch,
-    getEntriesByName
+    getEntriesByName,
+    showTrends,
+    getAllMyFeed
 } = require('../controllers/apiEntriesController')
 
 router.post('/pruebichi', entriesProof)
@@ -25,7 +27,9 @@ router.post('/pruebichi', entriesProof)
 router.get('/categorias/', getCategories)
 
 router.get('/',getEntries);
+router.get('/trends', showTrends)
 router.post('/', getMyEntries);
+router.post('/myfeed', getAllMyFeed)
 router.post('/allmyentries', getEntriesByName)
 router.get('/search/:search', getSearch)
 router.post('/create',[

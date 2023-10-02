@@ -72,7 +72,8 @@ const queries = {
                             FROM entries
                             JOIN authors ON entries.id_author = authors.id_author
                             WHERE entries.category = $1
-                            ORDER BY entries.date DESC`,
+                            ORDER BY entries.date DESC
+                            OFFSET $2`,
     createFollower: `INSERT INTO follows (follower, following)
                         VALUES
                          (
@@ -92,12 +93,25 @@ const queries = {
                   (SELECT COUNT(*) FROM follows WHERE follower = $1) as followingcounter,
                   (SELECT COUNT(*) FROM follows WHERE following = $1) as followercounter;
                   `,
-    getLastEntriesFromAuth:`SELECT entries.*, authors.name as "author.name"
+    getLastEntriesFromAuth:`SELECT entries.*, authors.name as "name"
                             FROM entries
                             JOIN authors ON entries.id_author = authors.id_author
                             WHERE authors.name = $1
                             OFFSET $2;
-                           `
+                           `,
+    showPublicProfile:`SELECT a.name, a.surname, a.isadmin, a.avatar, a.joined, a.description, a.background, a.website
+                       FROM authors AS a
+                       WHERE name = $1`,
+    getTrends:`SELECT *
+               FROM entries
+               ORDER BY replies DESC
+               LIMIT 4`,
+    getAllMyFeed:`SELECT e.title,e.content,e.date,e.category,e.authavatar, e.extract,e.entryImage,e.id_entry,e.replies,a.name,a.surname
+    FROM entries AS e
+    INNER JOIN authors AS a
+    ON e.id_author=a.id_author
+    WHERE name = $1
+    ORDER BY e.id_entry DESC`
 
 }
 

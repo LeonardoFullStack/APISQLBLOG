@@ -181,11 +181,11 @@ const showCategories = async () => {
     return data.rows
 }
 
-const showEntriesByCategoryConnect = async (category) => {
+const showEntriesByCategoryConnect = async (category, page) => {
     let client,data
     try {
          client = await pool.connect()
-         data = await client.query(queries.showEntriesByCategory, [category])
+         data = await client.query(queries.showEntriesByCategory, [category, page])
     } catch (error) {
        
         throw error
@@ -209,6 +209,34 @@ const getLastEntriesFromAuthConnect = async (name, offSet) => {
     return data.rows
 }
 
+const getTrendsConnect = async () => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.getTrends)
+    } catch (error) {
+       
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
+const allMyFeedConnect = async (name) => {
+    let client,data
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.getAllMyFeed, [name])
+    } catch (error) {
+       
+        throw error
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
 module.exports={
     getEntriesByEmail,
     createEntriesByEmail,
@@ -221,7 +249,9 @@ module.exports={
     getAllEntriesConnect,
     showCategories,
     showEntriesByCategoryConnect,
-    getLastEntriesFromAuthConnect
+    getLastEntriesFromAuthConnect,
+    getTrendsConnect,
+    allMyFeedConnect
     
 }
 

@@ -11,12 +11,15 @@ const { updateByIdConnect,
     deleteByIdConnect,
     showCategories,
     showEntriesByCategoryConnect,
-    getLastEntriesFromAuthConnect
+    getLastEntriesFromAuthConnect,
+    getTrendsConnect,
+    allMyFeedConnect
 
 } = require('../models/entries')
 
 const { getAuthByEmail,
-    getEmailByName
+    getEmailByName,
+    showFollowersConnect
 } = require('../models/author');
 
 const { getRepliesByIdModel } = require('../models/replies');
@@ -26,11 +29,11 @@ const { decodedToken } = require('../helpers/decodeToken');
 const getEntries = async (req, res) => {
     let data, msg, ok, userExists
     let { email, pag } = req.query
-    
+
 
 
     try {
-        
+
         if (email) {
 
             console.log('mail')
@@ -223,33 +226,40 @@ const createEntriesV2 = async (req, res) => {
     }
 }
 
-const entriesProof = async (req,res) => {
+const entriesProof = async (req, res) => {
     console.log(req)
 }
 
 const getCategories = async (req, res) => {
     const category = req.query.q
+    let offSet = (req.query.pag - 1) * 4
+
+    if (!req.query.pag) offSet = 0
 
     if (category) {
         try {
-            const entriesByCategory = await showEntriesByCategoryConnect(category)
+            const pageEntries = await showEntriesByCategoryConnect(category, 0)
+            const entriesByCategory = await showEntriesByCategoryConnect(category, offSet)
+            const pages = Math.ceil(pageEntries.length / 4)
+            const entriesSliced = entriesByCategory.slice(0, 4)
 
             if (entriesByCategory.length == 0) {
                 res.status(400).json({
-                    ok:false,
-                    msg:`No se han encontrado entradas con la categoría ${category}`
-                    
+                    ok: false,
+                    msg: `No se han encontrado entradas con la categoría ${category}`
+
                 })
             } else {
                 res.status(200).json({
-                    ok:true,
+                    ok: true,
                     category,
-                    entriesByCategory
-                    
+                    entriesByCategory: entriesSliced,
+                    pages
+
                 })
             }
-            
-           
+
+
         } catch (error) {
             res.status(400).json({
                 ok: false,
@@ -261,23 +271,23 @@ const getCategories = async (req, res) => {
 
         try {
             const categories = await showCategories();
-            
+
             if (categories.length > 4) {
                 categories.splice(4)
             }
 
             res.status(200).json({
-             ok:true,
-             msg:'Todas las categorías con su número de entradas correspondientes',
-             categories
-            }) 
+                ok: true,
+                msg: 'Todas las categorías con su número de entradas correspondientes',
+                categories
+            })
         } catch (error) {
             res.status(400).json({
-                ok:false,
+                ok: false,
                 error
             })
         }
-        
+
     }
 
 }
@@ -434,39 +444,39 @@ const updateById = async (req, res) => {
     }
 }
 
-const getSearch = async (req,res) => {
+const getSearch = async (req, res) => {
     let search = req.params.search.toLowerCase()
 
 
     try {
 
-    const data = await getAllEntries(1)
-    let dataSearch = []
-    const title = item.title.toLowerCase();
-    const name = item.name.toLowerCase();
-    const content = item.content.toLowerCase();
-    const extract = item.extract.toLowerCase();
-    const category = item.category.toLowerCase();
-    
-    data.forEach(item =>{
-       
-        if (title.includes(search) || name.includes(search) || content.includes(search)|| extract.includes(search) || category.includes(search)) {
-         dataSearch.push(item)
-        }
-    })
+        const data = await getAllEntries(1)
+        let dataSearch = []
+        const title = item.title.toLowerCase();
+        const name = item.name.toLowerCase();
+        const content = item.content.toLowerCase();
+        const extract = item.extract.toLowerCase();
+        const category = item.category.toLowerCase();
 
-    if (dataSearch.length == 0) {
-        res.status(200).json({
-            ok:true,
-            msg:'No se han encontrado entradas con ésta búsqueda'
+        data.forEach(item => {
+
+            if (title.includes(search) || name.includes(search) || content.includes(search) || extract.includes(search) || category.includes(search)) {
+                dataSearch.push(item)
+            }
         })
-    } else {
-        res.status(200).json({
-            ok:true,
-            msg:`Se han encontrado ${dataSearch.length} entrada/s`,
-            data: dataSearch
-        })
-    }
+
+        if (dataSearch.length == 0) {
+            res.status(200).json({
+                ok: true,
+                msg: 'No se han encontrado entradas con ésta búsqueda'
+            })
+        } else {
+            res.status(200).json({
+                ok: true,
+                msg: `Se han encontrado ${dataSearch.length} entrada/s`,
+                data: dataSearch
+            })
+        }
 
     } catch (error) {
         res.status(500).json({
@@ -475,11 +485,11 @@ const getSearch = async (req,res) => {
         })
     }
 
-    
+
 }
 
-const getEntriesByName = async (req,res) => {
-    const {token, page} = req.body
+const getEntriesByName = async (req, res) => {
+    const { token, page } = req.body
     const body = {
         token
     }
@@ -488,18 +498,99 @@ const getEntriesByName = async (req,res) => {
         const nameOfToken = await decodedToken(token);
         const request = await getLastEntriesFromAuthConnect(nameOfToken.name, page)
         res.status(200).json({
-            ok:true,
-            msg:`Todas tus entradas`,
-            data:request
+            ok: true,
+            msg: `Todas tus entradas`,
+            data: request
         })
     } catch (error) {
         res.status(400).json({
-            ok:false,
-            msg:`Contacta con el administrador`,
+            ok: false,
+            msg: `Contacta con el administrador`,
             error
         })
     }
 }
+
+const showTrends = async (req, res) => {
+    try {
+        const request = await getTrendsConnect()
+        res.status(200).json({
+            ok: true,
+            trends: request
+        })
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: `Contacta con el administrador`,
+            error
+        })
+    }
+}
+
+const getAllMyFeed = async (req, res) => {
+    const { name } = req.body;
+    let page = req.query.pag;
+    if (!req.query.pag) page = 1
+    let offSet = (page - 1) * 4
+
+    let myFeed = [];
+
+    try {
+        const showFollows = await showFollowersConnect(name);
+        const onlyFollowers = showFollows.filter(item => item.following !== name);
+        if (onlyFollowers.length === 0) {
+            return res.status(404).json({
+                ok: false,
+                msg: `${name} no tiene seguidores`
+            });
+        }
+       /* for (let i = 0; i <= onlyFollowers.length; i++) */
+        for (const [index, followItem] of onlyFollowers.entries()) {
+            const feed = await allMyFeedConnect(followItem.following);
+
+            if (index === 0) {
+                feed.forEach(item => {
+                    myFeed.push(item);
+                });
+            } else {
+                console.log('Otra vuelta');
+                const feedFiltered = feed.filter(entryFeedOfName => {
+                    let bulean = true;
+                    myFeed.forEach(entryToFilter => {
+                        if (entryToFilter.id_entry === entryFeedOfName.id_entry) {
+                            bulean = false;
+                        }
+                    });
+                    return bulean;
+                });
+
+                console.log('feedFiltered:', feedFiltered);
+
+                myFeed.push(...feedFiltered);
+            }
+        }
+        const totalPosts = myFeed.length
+        const pages = Math.ceil(myFeed.length / 4)
+        
+       const feedByPage = myFeed.splice(offSet, 4)
+        console.log(myFeed.length,'aquii')
+        res.status(200).json({
+            ok:true,
+            totalPosts,
+            page,
+            pages,
+            feed: feedByPage
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            msg: 'Contacta con el administrador',
+            error
+        });
+    }
+};
+
 
 module.exports = {
     getEntries,
@@ -514,6 +605,8 @@ module.exports = {
     entriesProof,
     getCategories,
     getSearch,
-    getEntriesByName
+    getEntriesByName,
+    showTrends,
+    getAllMyFeed
 }
 

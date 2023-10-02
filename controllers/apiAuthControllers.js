@@ -9,7 +9,8 @@ const { getAuthByEmail,
     deleteFollowerConnect,
     showFollowersConnect,
     getMyProfileConnect,
-    getAllFollowsConnect
+    getAllFollowsConnect,
+    showPublicProfileConnect
 } = require('../models/author');
 
 const { getAllAuts, } = require('../models/queries');
@@ -30,25 +31,25 @@ const getAuthor = async (req, res) => {
 
 
         if (consulta.ok) {
-                 passwordOk = bcrypt.compareSync(password, consulta.data[0].password);
+            passwordOk = bcrypt.compareSync(password, consulta.data[0].password);
 
-                if (passwordOk) {
-                    token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name, consulta.data[0].isadmin);
-                    msg = 'Login correcto'
-                    res.status(200).json({
-                        ok: true,
-                        msg,
-                        token
-                    })
-                } else {
-                    msg = 'Login fallido'
-                    res.status(400).json({
-                        ok: false,
-                        msg
-                    })
-                }
+            if (passwordOk) {
+                token = await generarJwt(consulta.data[0].id_author, consulta.data[0].name, consulta.data[0].isadmin);
+                msg = 'Login correcto'
+                res.status(200).json({
+                    ok: true,
+                    msg,
+                    token
+                })
+            } else {
+                msg = 'Login fallido'
+                res.status(400).json({
+                    ok: false,
+                    msg
+                })
+            }
 
-            
+
 
 
         } else if (!consulta.ok) {
@@ -250,80 +251,80 @@ const jwtVerify = async (req, res) => {
 
     try {
         let decoded = await jwt.verify(token, process.env.JWT_SECRET_KEY)
-        let {isAdmin, name} = await decoded
+        let { isAdmin, name } = await decoded
         res.status(200).json({
-            ok:true,
+            ok: true,
             name,
             isAdmin
         })
-        
+
     } catch (error) {
         res.status(400).json({
-            ok:false,
-            msg:'Token inválido'
+            ok: false,
+            msg: 'Token inválido'
         })
     }
 }
 
-const newFollower = async (req,res) => {
+const newFollower = async (req, res) => {
     const follower = req.body.follower
     const following = req.body.following
 
     try {
         const newFollower = newFollowerConnect(follower, following)
         res.status(200).json({
-            ok:true,
-            msg:'Se ha añadido a seguidos'
+            ok: true,
+            msg: 'Se ha añadido a seguidos'
         })
     } catch (error) {
         res.status(400).json({
-            ok:false,
+            ok: false,
             error
         })
     }
 
 }
 
-const deleteFollow = async (req,res) => {
+const deleteFollow = async (req, res) => {
     const follower = req.body.follower
     const following = req.body.following
 
     try {
         const newFollower = deleteFollowerConnect(follower, following)
         res.status(200).json({
-            ok:true,
-            msg:'Se ha eliminado de seguidos'
+            ok: true,
+            msg: 'Se ha eliminado de seguidos'
         })
     } catch (error) {
         res.status(400).json({
-            ok:false,
+            ok: false,
             error
         })
     }
 
 }
 
-const showFollowersByToken = async (req,res) => {
+const showFollowersByToken = async (req, res) => {
     const token = req.body.token
     try {
         const nameOfToken = await decodedToken(token);
 
         const showFollowers = await showFollowersConnect(nameOfToken.name)
         res.status(200).json({
-            ok:true,
-            msg:`Todos los seguidores de ${nameOfToken.name}`,
+            ok: true,
+            msg: `Todos los seguidores de ${nameOfToken.name}`,
             showFollowers
         })
     } catch (error) {
         res.status(400).json({
-            ok:false,
+            ok: false,
             error
         })
     }
 }
 
-const getProfileByToken = async (req,res) => {
-    const {token, page} = req.body
+const getProfileByToken = async (req, res) => {
+    const { token, page } = req.body
     const offSet = (page - 1) * 4 //las entradas a saltar según la página
 
     try {
@@ -336,19 +337,60 @@ const getProfileByToken = async (req,res) => {
         const entriesSliced = entries.slice(0, 4)
 
         res.status(200).json({
-            ok:true,
+            ok: true,
             msg: 'Datos de tu perfil',
             data: req,
-            follows:follows[0],
-            entries:entriesSliced,
+            follows: follows[0],
+            entries: entriesSliced,
             pages
         })
     } catch (error) {
         res.status(400).json({
-            ok:false,
+            ok: false,
             error
         })
     }
+}
+
+const getPublicProfile = async (req, res) => {
+    const publicName = req.params.name
+    let offSet = (req.query.pag - 1) * 4
+
+    if (req.query.pag == undefined) offSet = 0
+
+
+    try {
+        const request1 = await showPublicProfileConnect(publicName)
+
+        if (request1.length == 0) {
+            res.status(400).json({
+                ok: false,
+                msg: 'No se ha encontrado al usuario'
+            })
+        } else {
+
+
+            const entriesPages = await getLastEntriesFromAuthConnect(publicName, 0)
+            const entries = await getLastEntriesFromAuthConnect(publicName, offSet)
+            const follows = await getAllFollowsConnect(publicName)
+            const pages = Math.ceil(entriesPages.length / 4)
+            const entriesSliced = entries.slice(0, 4)
+
+            res.status(200).json({
+                ok: true,
+                profile: request1,
+                entries: entriesSliced,
+                follows,
+                pages
+            })
+        }
+    } catch (error) {
+        res.status(400).json({
+            ok: false,
+            error
+        })
+    }
+
 }
 
 
@@ -362,5 +404,6 @@ module.exports = {
     newFollower,
     deleteFollow,
     showFollowersByToken,
-    getProfileByToken
+    getProfileByToken,
+    getPublicProfile
 }

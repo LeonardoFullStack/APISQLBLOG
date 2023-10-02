@@ -232,6 +232,21 @@ const getAllFollowsConnect = async (name) => {
     return data.rows
 }
 
+const showPublicProfileConnect = async (name) => {
+    let data,client
+    try {
+         client = await pool.connect()
+         data = await client.query(queries.showPublicProfile, [name])
+        
+    } catch (error) {
+    
+       throw error 
+    } finally {
+        client.release()
+    }
+    return data.rows
+}
+
 module.exports = {
     getAuthByEmail,
     createAutConnect,
@@ -244,5 +259,6 @@ module.exports = {
     deleteFollowerConnect,
     showFollowersConnect,
     getMyProfileConnect,
-    getAllFollowsConnect
+    getAllFollowsConnect,
+    showPublicProfileConnect
 }

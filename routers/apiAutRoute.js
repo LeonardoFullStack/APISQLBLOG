@@ -13,9 +13,11 @@ const {getAuthor,
     newFollower,
     deleteFollow,
     showFollowersByToken,
-    getProfileByToken
+    getProfileByToken,
+    getPublicProfile
 } = require('../controllers/apiAuthControllers')
 
+router.get('/profile/:name', getPublicProfile)
 router.post('/',getAuthor);
 router.post('/verifytoken', jwtVerify)
 router.post('/myfollows/', showFollowersByToken);
