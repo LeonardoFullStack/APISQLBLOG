@@ -452,14 +452,14 @@ const getSearch = async (req, res) => {
 
         const data = await getAllEntries(1)
         let dataSearch = []
-        const title = item.title.toLowerCase();
-        const name = item.name.toLowerCase();
-        const content = item.content.toLowerCase();
-        const extract = item.extract.toLowerCase();
-        const category = item.category.toLowerCase();
+
 
         data.forEach(item => {
-
+            const title = item.title.toLowerCase();
+            const name = item.name.toLowerCase();
+            const content = item.content.toLowerCase();
+            const extract = item.extract.toLowerCase();
+            const category = item.category.toLowerCase();
             if (title.includes(search) || name.includes(search) || content.includes(search) || extract.includes(search) || category.includes(search)) {
                 dataSearch.push(item)
             }
@@ -544,7 +544,7 @@ const getAllMyFeed = async (req, res) => {
                 msg: `${name} no tiene seguidores`
             });
         }
-       /* for (let i = 0; i <= onlyFollowers.length; i++) */
+        /* for (let i = 0; i <= onlyFollowers.length; i++) */
         for (const [index, followItem] of onlyFollowers.entries()) {
             const feed = await allMyFeedConnect(followItem.following);
 
@@ -571,11 +571,11 @@ const getAllMyFeed = async (req, res) => {
         }
         const totalPosts = myFeed.length
         const pages = Math.ceil(myFeed.length / 4)
-        
-       const feedByPage = myFeed.splice(offSet, 4)
-        console.log(myFeed.length,'aquii')
+
+        const feedByPage = myFeed.splice(offSet, 4)
+        console.log(myFeed.length, 'aquii')
         res.status(200).json({
-            ok:true,
+            ok: true,
             totalPosts,
             page,
             pages,

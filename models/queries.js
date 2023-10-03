@@ -1,6 +1,6 @@
 const queries = {
     getEntriesByEmail: `
-    SELECT e.title,e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
+    SELECT e.title, e.authavatar, e.content,e.date,e.category, e.extract,e.entryImage,e.id_entry,a.name,a.surname
     FROM entries AS e
     INNER JOIN authors AS a
     ON e.id_author=a.id_author
